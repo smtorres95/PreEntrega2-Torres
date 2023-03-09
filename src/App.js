@@ -1,23 +1,35 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState, useEffect } from "react";
+import { BrowserRouter } from "react-router-dom"
+import AppRoutes from "./Components/AppRoutes/AppRoutes";
+import ItemList from "./Components/ItemList/ItemList";
+import Landing from "./Components/Landing";
+import Navbar from "./Components/Navbar/Navbar";
 
 function App() {
+
+  const [search, setSearch] = useState("")
+  const [results, setResults] = useState([])
+ 
+  useEffect(() => {
+    if(search != ""){
+      fetch(`https://api.mercadolibre.com/sites/MLA/search?q=${search}`)
+      .then ((res) => res.json())
+      .then ((data) => setResults(data.results))
+    }
+  }, [search])
+  
+  console.log(results)
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <BrowserRouter>
+
+      <Navbar setSearch={setSearch}/>
+      <Landing/>
+      <ItemList results={results}/>
+
+      <AppRoutes/>
+
+      </BrowserRouter>
     </div>
   );
 }
